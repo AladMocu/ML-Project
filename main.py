@@ -45,14 +45,6 @@ class Ui_MainWindow(object):
         self.iot_rad.setObjectName("iot_rad")
         self.iot_rad.setChecked(True)
         self.verticalLayout.addWidget(self.iot_rad)
-        self.select_iot = QtWidgets.QComboBox(self.horizontalLayoutWidget)
-        self.select_iot.setObjectName("select_iot")
-        self.select_iot.addItem("")
-        self.select_iot.addItem("")
-        self.select_iot.addItem("")
-        self.select_iot.addItem("")
-        self.select_iot.addItem("")
-        self.verticalLayout.addWidget(self.select_iot)
         self.atk_rad = QtWidgets.QRadioButton(self.horizontalLayoutWidget)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
@@ -62,6 +54,12 @@ class Ui_MainWindow(object):
         self.atk_rad.setChecked(False)
         self.atk_rad.setObjectName("atk_rad")
         self.verticalLayout.addWidget(self.atk_rad)
+        self.atk_field = QtWidgets.QLineEdit(self.horizontalLayoutWidget)
+        self.atk_field.setSizePolicy(sizePolicy)
+        self.verticalLayout.addWidget(self.atk_field)
+
+
+
         spacerItem1 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.verticalLayout.addItem(spacerItem1)
         self.horizontalLayout.addLayout(self.verticalLayout)
@@ -112,11 +110,6 @@ class Ui_MainWindow(object):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
         self.iot_rad.setText(_translate("MainWindow", "Reporte Dispositivo Normal"))
-        self.select_iot.setItemText(0, _translate("MainWindow", "Temperatura"))
-        self.select_iot.setItemText(1, _translate("MainWindow", "Humedad"))
-        self.select_iot.setItemText(2, _translate("MainWindow", "Presion"))
-        self.select_iot.setItemText(3, _translate("MainWindow", "Ubicacion"))
-        self.select_iot.setItemText(4, _translate("MainWindow", "Consumo energetico"))
         self.atk_rad.setText(_translate("MainWindow", "Atacante"))
         self.execPackage.setText(_translate("MainWindow", "Enviar Simulacion Paquete"))
         self.arrow_lbl.setText(_translate("MainWindow", "{}"))
@@ -124,10 +117,17 @@ class Ui_MainWindow(object):
         self.add_actions()
 
     def add_actions(self):
-        self.iot_rad.toggled.connect(lambda: self.select_iot.setEnabled(self.iot_rad.isChecked()))
-        self.execPackage.clicked.connect(lambda: self.classify(self.select_iot.currentText() if self.iot_rad.isChecked() else "atk"))
-
-
+        arr = [
+            "3478  >  3719 [FIN, ACK] Seq=1 Ack=1 Win=7936 Len=0 TSval=4121769948 TSecr=30459863",
+            "22  >  50426 [ACK] Seq=1 Ack=22 Win=29056 Len=0 TSval=1844512794 TSecr=766030734",
+            "22  >  50426 [ACK] Seq=1018 Ack=1382 Win=31872 Len=0 TSval=1844512894 TSecr=766030790",
+            "22  >  50426 [ACK] Seq=1382 Ack=1490 Win=31872 Len=0 TSval=1844513002 TSecr=766030951",
+            "22  >  50426 [ACK] Seq=2086 Ack=3462 Win=37504 Len=0 TSval=1844516994 TSecr=766034862",
+            "[TCP Retransmission] 22  >  50426 [PSH, ACK] Seq=4654 Ack=4382 Win=40192 Len=196 TSval=1844522665 TSecr=766040474"
+        ]
+        self.execPackage.clicked.connect(lambda: self.classify(random.choice(arr) if self.iot_rad.isChecked() else
+                                                               self.atk_field.text()))
+        #"27000  >  50000 Len=4"
 
     def classify(self, trace):
         logic.classify(trace)
